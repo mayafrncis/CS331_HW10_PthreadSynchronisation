@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include <stdlib.h>
 
 long long counter = 0;
 const int n = 4;
