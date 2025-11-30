@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 long long balance = 0;
-const int n = 4; // n must be even.
+int n = 4; // n must be even.
 int is_mutex;
 int is_long;
 
