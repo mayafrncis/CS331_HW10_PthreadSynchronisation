@@ -29,10 +29,15 @@ void* producer(void* args) {
 		pthread_mutex_unlock(&buffer_mutex);
 		sem_wait(&empty_slots);
 		pthread_mutex_lock(&buffer_mutex);
+		if (produced >= k) {
+                        pthread_mutex_unlock(&buffer_mutex);
+                        sem_post(&empty_slots);
+                        break;
+                }
 		produced++;
 		buffer[in_pos] = 1;
 		printf("Produced an item.\n");
-		in_pos = (++in_pos) % BUFFER_SIZE;
+		in_pos = (1+in_pos) % BUFFER_SIZE;
 		pthread_mutex_unlock(&buffer_mutex);
 		sem_post(&full_slots);
 	}
@@ -50,6 +55,11 @@ void* consumer(void* args) {
 		pthread_mutex_unlock(&buffer_mutex);
 		sem_wait(&full_slots);
 		pthread_mutex_lock(&buffer_mutex);
+		if (consumed >= k) {
+                        pthread_mutex_unlock(&buffer_mutex);
+                        sem_post(&full_slots);
+                        break;
+                }
 		printf("Consumed an item.\n");
 		out_pos = (++out_pos) % BUFFER_SIZE;
 		consumed++;
