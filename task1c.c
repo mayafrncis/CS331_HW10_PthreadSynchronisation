@@ -32,5 +32,8 @@ int main() {
         printf("Actual value of counter: %lld\n", counter);
 
 	pthread_spin_destroy(&spinlock); 
+	free(threads);
+	threads = NULL;
+
         return 0;
 }

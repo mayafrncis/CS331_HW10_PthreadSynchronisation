@@ -31,6 +31,8 @@ int main() {
 		pthread_join(threads[i], NULL);
 	}
 
+	free(threads);
+	threads = NULL;
 	sem_destroy(&printers);
 	return 0;
 }

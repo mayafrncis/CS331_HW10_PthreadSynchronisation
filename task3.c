@@ -23,16 +23,16 @@ void* producer(void* args) {
 		pthread_mutex_lock(&buffer_mutex);
 		if (produced >= k) {
 			pthread_mutex_unlock(&buffer_mutex);
-			sem_post(&full_slots);
+			sem_post(&empty_slots);
 			break;
 		}
 		pthread_mutex_unlock(&buffer_mutex);
 		sem_wait(&empty_slots);
 		pthread_mutex_lock(&buffer_mutex);
+		produced++;
 		buffer[in_pos] = 1;
 		printf("Produced an item.\n");
 		in_pos = (++in_pos) % BUFFER_SIZE;
-		produced++;
 		pthread_mutex_unlock(&buffer_mutex);
 		sem_post(&full_slots);
 	}
@@ -44,7 +44,7 @@ void* consumer(void* args) {
 		pthread_mutex_lock(&buffer_mutex);
 		if (consumed >= k) {
 			pthread_mutex_unlock(&buffer_mutex);
-			sem_post(&empty_slots);
+			sem_post(&full_slots);
 			break;
 		}
 		pthread_mutex_unlock(&buffer_mutex);
@@ -64,6 +64,8 @@ int main() {
 	pthread_t* p = (pthread_t*) malloc(sizeof(pthread_t) * n);
 	pthread_t* c = (pthread_t*) malloc(sizeof(pthread_t) * n);
 
+	pthread_mutex_init(&buffer_mutex, NULL);
+
 	sem_init(&empty_slots, 0, BUFFER_SIZE);
 	sem_init(&full_slots, 0, 0);
 
@@ -80,6 +82,10 @@ int main() {
 	sem_destroy(&empty_slots);
 	sem_destroy(&full_slots);
 	pthread_mutex_destroy(&buffer_mutex);
+	free(p);
+	free(c);
+	p = NULL;
+	c = NULL;
 
 	printf("Program is done\n");
 

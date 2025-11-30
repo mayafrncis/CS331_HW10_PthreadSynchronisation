@@ -19,16 +19,24 @@ void* increment(void* args) {
  
 int main() {
 	pthread_t* threads = (pthread_t*) malloc(sizeof(pthread_t) * n);
+
+	pthread_mutex_init(&mutex, NULL);
  
 	for (int i = 0; i < n; i++) {
 		pthread_create(&threads[i], NULL, increment, NULL); 
 	}
 	for (int i = 0; i < n; i++)
 		pthread_join(threads[i], NULL);
+
+	pthread_mutex_destroy(&mutex);
  
 	printf("Expected value of counter: %d\n", m * n);
 	printf("Actual value of counter: %lld\n", counter);
- 
+
+	pthread_mutex_destroy(&mutex);
+	free(threads);
+	threads = NULL; 
+
 	return 0;
 }
 

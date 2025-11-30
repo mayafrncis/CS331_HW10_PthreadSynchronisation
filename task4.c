@@ -57,5 +57,9 @@ int main() {
 	pthread_join(threadB, NULL);
 	pthread_join(threadC, NULL);
 
+	sem_destroy(&semA);
+	sem_destroy(&semB);
+	sem_destroy(&semC);
+	pthread_mutex_destroy(&print_mutex);
 	return 0;
 }

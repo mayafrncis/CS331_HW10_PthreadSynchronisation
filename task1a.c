@@ -25,5 +25,7 @@ int main() {
 	printf("Expected value of counter: %d\n", m * n);
 	printf("Actual value of counter: %lld\n", counter);
 
+	free(threads);
+	threads = NULL;
 	return 0;
 }
